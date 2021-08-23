@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.UserDao">
+    <sql id="all">
+        select id,phone,username,head,brief,wechat,mins,status from yx_user
+    </sql>
+    <!-- 分页查List<User> selectByPage(@Param("start")int start,@Param("count") int count); -->
+    <select id="selectByPage" resultType="User">
+        <include refid="all"/> limit #{start},#{count}
+    </select>
+    <!-- 添加void insert(User user); -->
+    <insert id="insert" parameterType="User">
+        insert into yx_user values (#{id},#{phone},#{username},#{head},#{brief},#{wechat},#{mins},#{status})
+    </insert>
+    <!-- 删void delete(String id); -->
+    <delete id="delete" parameterType="String">
+        delete from yx_user where id=#{id}
+    </delete>
+    <!-- 改void update(User user); ,head=#{head}  -->
+    <update id="update" parameterType="User">
+        update yx_user set username=#{username},brief=#{brief} where id=#{id}
+    </update>
+    <!-- 改void update(User user); -->
+    <update id="updateStatus" parameterType="User">
+        update yx_user set status=#{status} where id=#{id}
+    </update>
+    <!-- 查一个User select(String phone); -->
+    <select id="select" parameterType="String" resultType="User">
+        <include refid="all"/> where phone=#{phone}
+    </select>
+    <select id="size" resultType="int">
+        select count(*) from yx_user
+    </select>
+<!--    查询用户信息List<User> selectAll();-->
+    <select id="selectAll" resultType="User">
+        <include refid="all"/>
+    </select>
+<!--    根据月份查询用户每月注册人数List<User> selectDate();-->
+    <!--select month(mins) mins,count(*) count from yx_user where sex=#{sex} group by month(mins)
+    select DATE_FORMAT(mins,'%m') mins,count(*) count from yx_user where sex=#{sex} group by DATE_FORMAT(mins,'%m')-->
+    <select id="selectDate" parameterType="String" resultType="com.baizhi.vo.UserVO">
+        select month(mins) mins,count(*) count from yx_user where sex=#{sex} group by month(mins)
+    </select>
+</mapper>

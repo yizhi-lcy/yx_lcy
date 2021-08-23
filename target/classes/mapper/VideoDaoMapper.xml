@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.VideoDao">
+
+    <resultMap id="all" type="Video">
+        <id property="id" column="id"></id>
+        <result column="title" property="title"></result>
+        <result column="brief" property="brief"></result>
+        <result column="cover_path" property="coverPath"></result>
+        <result column="video_path" property="videoPath"></result>
+        <result column="create_date" property="mins"></result>
+        <association property="categroy" javaType="Categroy">
+            <id column="cate_id" property="id"></id>
+            <result column="cate_name" property="cate_name"></result>
+        </association>
+        <association property="user" javaType="User">
+            <id column="user_id" property="id"></id>
+            <result column="username" property="username"></result>
+        </association>
+    </resultMap>
+
+<!--    增void insert(Video video);-->
+    <insert id="insert" parameterType="Video">
+        insert into yx_video
+        values (#{id},#{title},#{brief},#{coverPath},#{videoPath},#{mins},#{categroy.id},#{user.id},#{group_id})
+    </insert>
+<!--    删void delete(String id);-->
+    <delete id="delete" parameterType="String">
+        delete from yx_video where id=#{id}
+    </delete>
+<!--    分页查全部List<Video> selectByPage(@Param("start") int start,@Param("count") int count);-->
+    <select id="selectByPage" resultMap="all">
+        select v.id,v.title,v.brief,cover_path,video_path,create_date,u.username,c.cate_name from
+            (select id,title,brief,cover_path,video_path,create_date,cate_id,user_id from yx_video limit #{start},#{count}) v
+                left join yx_category c
+                          on v.cate_id=c.id
+                left join yx_user u
+                          on v.user_id=u.id
+    </select>
+<!--    查全部页数 int size();-->
+    <select id="size" resultType="int">
+        select count(*) from yx_video
+    </select>
+</mapper>
