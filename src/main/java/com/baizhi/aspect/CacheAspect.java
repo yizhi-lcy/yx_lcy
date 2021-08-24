@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CacheAspect {
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;  //对字符串支持比较友好,不能存储对象
+    /*@Autowired
+    private StringRedisTemplate stringRedisTemplate;*/  //对字符串支持比较友好,不能存储对象
     @Autowired
     private RedisTemplate redisTemplate;  //存储对象
 

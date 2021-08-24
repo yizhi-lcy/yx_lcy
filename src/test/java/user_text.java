@@ -1,9 +1,11 @@
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import com.alibaba.fastjson.JSONObject;
 import com.baizhi.YXApplication;
 import com.baizhi.config.AliyunConfig;
 import com.baizhi.dao.UserDao;
 import com.baizhi.entity.User;
+import com.baizhi.service.UserService;
 import com.baizhi.util.Aliyun;
 import io.goeasy.GoEasy;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -13,20 +15,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SpringBootTest(classes = YXApplication.class)
 public class user_text {
     @Autowired
     private UserDao ud;
+    @Autowired
+    private UserService us;
 
     @Test
     public void yingx(){
-        GoEasy goEasy = new GoEasy( "http(s)://hangzhou.goeasy.io", "BC-7c2bfaf2510c4a6f9a16fde1448bde01");
-                goEasy.publish("yingx", "Hello GoEasy");
+        HashMap<String, Object> date = us.selectDate();
+        String s = JSONObject.toJSONString(date);
+        System.out.println(s);
+       /* GoEasy goEasy = new GoEasy( "http(s)://hangzhou.goeasy.io", "BC-7c2bfaf2510c4a6f9a16fde1448bde01");
+                goEasy.publish("yingx", "Hello GoEasy");*/
 
            /*     ,new PublishListener(){
             @Override

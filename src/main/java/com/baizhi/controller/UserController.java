@@ -1,9 +1,11 @@
 package com.baizhi.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baizhi.entity.User;
 import com.baizhi.service.UserService;
 import com.baizhi.util.Upload;
 import com.baizhi.vo.UserVO;
+import io.goeasy.GoEasy;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,24 +35,24 @@ public class UserController {
     }
 
     @RequestMapping("del")
-    public HashMap<String, Object> del(String id,String photoPath){
-        HashMap<String, Object> date=new HashMap<>();
+    public String del(String id,String photoPath){
         try {
             log.debug("传过来的id："+id);
             log.debug("传过来的photoPath："+photoPath);
             us.delete(id,photoPath);
-            date = us.selectDate();
         /*Set<String> set = date.keySet();
         for (String s : set) {
             System.out.println(s+"  "+date.get(s));
         }*/
-
-            date.put("result","ok");
+            HashMap<String, Object> date = us.selectDate();
+            String s = JSONObject.toJSONString(date);
+            GoEasy goEasy = new GoEasy( "http://hangzhou.goeasy.io", "BC-7c2bfaf2510c4a6f9a16fde1448bde01");
+            goEasy.publish("yingx",s);
+            return "ok";
         }catch (Exception e){
             e.printStackTrace();
-            date.put("result","error");
+            return "error";
         }
-        return date;
     }
 
     @RequestMapping("export")
@@ -93,13 +95,12 @@ public class UserController {
     }
 
     @PostMapping("add")//添加
-    public HashMap<String, Object> add(String phone, String username, String brief, MultipartFile photo) {
-        HashMap<String, Object> hm = new HashMap<>();
+    public String add(String phone, String username, String brief, MultipartFile photo) {
+        log.debug("添加数据");
         try {
             User u = us.select(phone);
             if (u != null) {
-                hm.put("result", "no");
-                hm.put("str", "此手机号已存在，请登录！");
+                return  "此手机号已存在，请登录！";
             } else {
                 /*String id = UUID.randomUUID().toString();
                 //上传头像
@@ -119,14 +120,14 @@ public class UserController {
                 user.setBrief(brief);
 
                 us.insert(photo,user);
-                hm = us.selectDate();
-                hm.put("result", "ok");
+                HashMap<String, Object> date = us.selectDate();
+                String s = JSONObject.toJSONString(date);
+                GoEasy goEasy = new GoEasy( "http://hangzhou.goeasy.io", "BC-7c2bfaf2510c4a6f9a16fde1448bde01");
+                goEasy.publish("yingx",s);
+                return  "ok";
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            hm.put("result", "error");
-        }finally {
-            return hm;
+            return "error";
         }
     }
 

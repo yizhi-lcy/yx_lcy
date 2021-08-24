@@ -10,7 +10,7 @@
     </select>
     <!-- 添加void insert(User user); -->
     <insert id="insert" parameterType="User">
-        insert into yx_user values (#{id},#{phone},#{username},#{head},#{brief},#{wechat},#{mins},#{status})
+        insert into yx_user values (#{id},#{phone},#{username},#{head},#{brief},#{wechat},#{mins},#{status},'女')
     </insert>
     <!-- 删void delete(String id); -->
     <delete id="delete" parameterType="String">
